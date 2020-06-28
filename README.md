@@ -37,11 +37,11 @@ After that, you need to use any **analyzer of squid** logs.
     cd go-netflow2squid
     make
 
-После этого нужно использовать любой **аналозатор логов Squid-а**.
-
 ### Как использовать
 
     flow-cat ft-v05.YYYY-MM-DD.HHMMSS+Z | flow-print -f 5 | go-netflow2squid > access_netflow.log
+
+После этого нужно использовать любой **аналозатор логов Squid-а**.
 
 ### Благодарности
 
