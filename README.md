@@ -41,7 +41,7 @@ After that, you need to use any **analyzer of squid** logs.
 
     flow-cat ft-v05.YYYY-MM-DD.HHMMSS+Z | flow-print -f 5 | go-netflow2squid > access_netflow.log
 
-После этого нужно использовать любой **аналозатор логов Squid-а**.
+После этого можно использовать любой **анализатор логов Squid-а**.
 
 ### Благодарности
 
