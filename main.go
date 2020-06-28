@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var dataLine = "0623.09:52:34.249 0623.09:53:20.879 13    217.20.152.247  443   8     192.168.65.82   40192 6   2  47         41724"
+// var dataLine = "0623.09:52:34.249 0623.09:53:20.879 13    217.20.152.247  443   8     192.168.65.82   40192 6   2  47         41724"
 
 func init() {
 
@@ -54,7 +54,9 @@ func parseNetFlowToSquidLine(strIn, year, collectorIP string) (string, error) {
 		protocol = "OTHER_PACKET"
 
 	}
-	out := fmt.Sprintf("%v %6v %v %v/200 %v HEAD %v:%v - FIRSTUP_PARENT/%v packet/netflow", unixStampStr, delayStr, strArray[6], protocol, strArray[len(strArray)-1], strArray[3], strArray[4], collectorIP)
+	//Start             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets
+	//
+	out := fmt.Sprintf("%v %6v %v %v:%v/200 %v HEAD %v:%v - FIRSTUP_PARENT/%v packet/netflow", unixStampStr, delayStr, strArray[3], protocol, strArray[4], strArray[len(strArray)-1], strArray[6], strArray[7], collectorIP)
 	return out, nil
 }
 
