@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -9,9 +10,12 @@ import (
 	"time"
 )
 
-// var dataLine = "0623.09:52:34.249 0623.09:53:20.879 13    217.20.152.247  443   8     192.168.65.82   40192 6   2  47         41724"
+var year, collectorIP string
 
 func init() {
+	flag.StringVar(&year, "year", "2020", "Year when the ft file was recorded")
+	flag.StringVar(&collectorIP, "ip", "192.168.65.1", "Ip address of the netflow collector")
+	flag.Parse()
 
 }
 
@@ -19,8 +23,11 @@ func main() {
 	in := bufio.NewScanner(os.Stdin)
 	for in.Scan() {
 		line := in.Text()
-		// fmt.Println(line)
-		outStr, _ := parseNetFlowToSquidLine(line, "2020", "192.168.65.1")
+		outStr, err := parseNetFlowToSquidLine(line, year, collectorIP)
+		if err != nil {
+			fmt.Errorf("Error, %v", err)
+			os.Exit(1)
+		}
 		fmt.Println(outStr)
 	}
 
@@ -33,9 +40,6 @@ func main() {
 func parseNetFlowToSquidLine(strIn, year, collectorIP string) (string, error) {
 	var protocol string
 	strArray := strings.Fields(strIn)
-	// fmt.Println(str2)
-	// str := strings.Join(strings.Fields(strIn), " ")
-	// strArray := strings.Split(str, " ")
 	if len(strArray) <= 0 {
 		return "", nil
 	}
