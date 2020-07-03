@@ -29,7 +29,7 @@ func main() {
 	// 	fmt.Errorf("Error, %v", err)
 	// 	os.Exit(1)
 	// }
-	fmt.Println(outStr)
+	// fmt.Println(outStr)
 	in := bufio.NewScanner(os.Stdin)
 	for in.Scan() {
 		line := in.Text()
@@ -73,7 +73,7 @@ func parseNetFlowToSquidLine(strIn, year, collectorIP, gmt string) (string, erro
 	}
 	//Start             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets
 	//
-	out := fmt.Sprintf("%v %6v %v %v/200 %v HEAD %v:%v - FIRSTUP_PARENT/%v packet_netflow/%v", unixStampStr, delayStr, strArray[3], protocol, strArray[len(strArray)-1], strArray[6], strArray[7], collectorIP, strArray[4])
+	out := fmt.Sprintf("%v %6v %v %v/- %v HEAD %v:%v - FIRSTUP_PARENT/%v packet_netflow/%v", unixStampStr, delayStr, strArray[3], protocol, strArray[len(strArray)-1], strArray[6], strArray[7], collectorIP, strArray[4])
 	return out, nil
 }
 
