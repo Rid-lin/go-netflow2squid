@@ -22,7 +22,7 @@ var testingunixStampFromNetflowDate = "0623.09:52:34.249"
 var testingunixStampFromNetflowDateOK int64 = 1592905954249
 
 func TestParseNetFlowToSquidLine(t *testing.T) {
-	result, err := parseNetFlowToSquidLine(testingInLine, "2020", "192.168.65.1")
+	result, err := parseNetFlowToSquidLine(testingInLine, "2020", "192.168.65.1", "+0500")
 	if err != nil {
 		t.Errorf("Test OK failed: %s", err)
 	}
@@ -32,30 +32,30 @@ func TestParseNetFlowToSquidLine(t *testing.T) {
 }
 
 func TestUnixStampFromNetflowDateStr(t *testing.T) {
-	result := unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "2020")
+	result := unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "2020", "+0500")
 	if result != testingunixStampFromNetflowDateStrOK {
 		t.Errorf("Test 'unixStampFromNetflowDate' failed, result not match")
 	}
-	result = unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "2019")
+	result = unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "2019", "+0500")
 	if result == testingunixStampFromNetflowDateStrOK {
 		t.Errorf("Test 'unixStampFromNetflowDate' with wrong data failed,  result not match")
 	}
-	result = unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "20")
+	result = unixStampFromNetflowDateStr(testingunixStampFromNetflowDateStr, "20", "+0500")
 	if result != "" {
 		t.Errorf("Test 'unixStampFromNetflowDate' with wrong data failed, return wrong result")
 	}
 }
 
 func TestUnixStampFromNetflowDate(t *testing.T) {
-	result := unixStampFromNetflowDate(testingunixStampFromNetflowDate, "2020")
+	result := unixStampFromNetflowDate(testingunixStampFromNetflowDate, "2020", "+0500")
 	if result != testingunixStampFromNetflowDateOK {
 		t.Errorf("Test 'unixStampFromNetflowDate' failed, result not match")
 	}
-	result = unixStampFromNetflowDate(testingunixStampFromNetflowDate, "2019")
+	result = unixStampFromNetflowDate(testingunixStampFromNetflowDate, "2019", "+0500")
 	if result == testingunixStampFromNetflowDateOK {
 		t.Errorf("Test 'unixStampFromNetflowDate' with wrong data failed,  result not match")
 	}
-	result = unixStampFromNetflowDate(testingunixStampFromNetflowDate, "20")
+	result = unixStampFromNetflowDate(testingunixStampFromNetflowDate, "20", "+0500")
 	if result != 0 {
 		t.Errorf("Test 'unixStampFromNetflowDate' with wrong data failed, return wrong result")
 	}

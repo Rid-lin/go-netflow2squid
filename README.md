@@ -1,6 +1,6 @@
 # go-netflow2squid
 
-## Transpiler from netflow v5 format to default squid log format
+## Tnaslator from netflow v5 format to default squid log format
 
 ### How To Build
 
@@ -18,6 +18,10 @@ and next
 
 After that, you need to use any **analyzer of squid** logs.
 
+    Extra options:
+    -gmt - sets the time zone in the format "+0300", by default "+0500".
+    -year - specifies which year to use for time conversion, by default 2020
+
 ### Thanks
 
 - [Translation of Squid documentation](http://break-people.ru)
@@ -25,7 +29,7 @@ After that, you need to use any **analyzer of squid** logs.
 
 -------------------------------------------------
 
-### Это транспилятор из формата netflow v5 в формат логов Squid по-умолчанию
+### Это транслятор из формата netflow v5 в формат логов Squid по-умолчанию
 
 ### Как установить
 
@@ -42,6 +46,10 @@ After that, you need to use any **analyzer of squid** logs.
     flow-cat ft-v05.YYYY-MM-DD.HHMMSS+Z | flow-print -f 5 | go-netflow2squid > access_netflow.log
 
 После этого можно использовать любой **анализатор логов Squid-а**.
+
+    Дополнительные параметры:
+    -gmt - устанавливает часовой пояс в формате "+0300", по-умолчанию "+0500".
+    -year - указывает какой год использовать для перевода времени, по-умолчанию 2020
 
 ### Благодарности
 

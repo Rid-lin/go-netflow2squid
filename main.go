@@ -10,9 +10,12 @@ import (
 	"time"
 )
 
-var year, collectorIP string
+var (
+	year, collectorIP, gmt string
+)
 
 func init() {
+	flag.StringVar(&gmt, "gmt", "+0500", "GMT time zone for the current collector")
 	flag.StringVar(&year, "year", "2020", "Year when the ft file was recorded")
 	flag.StringVar(&collectorIP, "ip", "192.168.65.1", "Ip address of the netflow collector")
 	flag.Parse()
@@ -20,10 +23,17 @@ func init() {
 }
 
 func main() {
+	// line := "0623.09:57:16.569 0623.09:58:06.299 8     192.168.65.143  38978 13    87.250.251.119  443   6   2  553        612073"
+	// outStr, err := parseNetFlowToSquidLine(line, year, collectorIP)
+	// if err != nil {
+	// 	fmt.Errorf("Error, %v", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Println(outStr)
 	in := bufio.NewScanner(os.Stdin)
 	for in.Scan() {
 		line := in.Text()
-		outStr, err := parseNetFlowToSquidLine(line, year, collectorIP)
+		outStr, err := parseNetFlowToSquidLine(line, year, collectorIP, gmt)
 		if err != nil {
 			fmt.Errorf("Error, %v", err)
 			os.Exit(1)
@@ -33,19 +43,19 @@ func main() {
 
 }
 
-// Input - string in netflow format №5
+//Input - string in netflow format №5
 //Start             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets
 //Output - squid log format default
 
-func parseNetFlowToSquidLine(strIn, year, collectorIP string) (string, error) {
+func parseNetFlowToSquidLine(strIn, year, collectorIP, gmt string) (string, error) {
 	var protocol string
 	strArray := strings.Fields(strIn)
 	if len(strArray) <= 0 {
 		return "", nil
 	}
-	unixStampStr := unixStampFromNetflowDateStr(strArray[0], year)
-	startOfResponse := unixStampFromNetflowDate(strArray[0], year)
-	endOfResponse := unixStampFromNetflowDate(strArray[1], year)
+	unixStampStr := unixStampFromNetflowDateStr(strArray[0], year, gmt)
+	startOfResponse := unixStampFromNetflowDate(strArray[0], year, gmt)
+	endOfResponse := unixStampFromNetflowDate(strArray[1], year, gmt)
 	delayStr := strconv.FormatInt((endOfResponse/1000 - startOfResponse/1000), 10)
 	// user = "-"
 
@@ -54,19 +64,22 @@ func parseNetFlowToSquidLine(strIn, year, collectorIP string) (string, error) {
 		protocol = "TCP_PACKET"
 	case "17":
 		protocol = "UDP_PACKET"
+	case "1":
+		protocol = "ICMP_PACKET"
+
 	default:
 		protocol = "OTHER_PACKET"
 
 	}
 	//Start             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets
 	//
-	out := fmt.Sprintf("%v %6v %v %v:%v/200 %v HEAD %v:%v - FIRSTUP_PARENT/%v packet/netflow", unixStampStr, delayStr, strArray[3], protocol, strArray[4], strArray[len(strArray)-1], strArray[6], strArray[7], collectorIP)
+	out := fmt.Sprintf("%v %6v %v %v/- %v HEAD %v:%v - FIRSTUP_PARENT/%v packet_netflow/%v", unixStampStr, delayStr, strArray[3], protocol, strArray[len(strArray)-1], strArray[6], strArray[7], collectorIP, strArray[4])
 	return out, nil
 }
 
-func unixStampFromNetflowDateStr(str, year string) string {
-	str = year + str
-	normalizedDate, err := time.Parse("20060102.15:04:05.000", str)
+func unixStampFromNetflowDateStr(str, year, gmt string) string {
+	str = year + str + gmt
+	normalizedDate, err := time.Parse("20060102.15:04:05.000-0700", str)
 	if err != nil {
 		return ""
 	}
@@ -84,9 +97,9 @@ func unixStampFromNetflowDateStr(str, year string) string {
 	return out
 }
 
-func unixStampFromNetflowDate(str, year string) int64 {
-	str = year + str
-	normalizedDate, err := time.Parse("20060102.15:04:05.000", str)
+func unixStampFromNetflowDate(str, year, gmt string) int64 {
+	str = year + str + gmt
+	normalizedDate, err := time.Parse("20060102.15:04:05.000-0700", str)
 	if err != nil {
 		return 0
 	}
